@@ -48,6 +48,9 @@ public class personService {
     public String addNewTravelByName(String name) {
         person Person = personRepository.findById(name).get();
         travel travel = new travel();
+
+        //a személy aki kapja az utazást
+
         travel.setPerson(Person);
         Long utso = travelrepository.getMaxDateId(Person.getName());
         Long utso2 = travelrepository.getSecondMaxDateId(Person.getName());;
@@ -59,6 +62,9 @@ public class personService {
         int i;
         city jelenlegiCity = new city();
         jelenlegiCity.setKm(0);
+
+        // a megfelelő város kiválasztása
+
         for (i = 0; i < cities.size() - 1; i++) {
             newUrlString = regiurl.toString().replace("latitudehelye", cities.get(i).getLatitude()).replace("longlatiudehelye", cities.get(i).getLonglatitude());
             apiconnector.getJSONArray(newUrlString);
@@ -73,6 +79,9 @@ public class personService {
             }
             travel.setCity(jelenlegiCity);
         }}
+
+        //dátum
+
         java.util.Date date = new java.util.Date();
         java.sql.Date sqlDate = new java.sql.Date(date.getTime());
         travel.setTravelDate(sqlDate);
