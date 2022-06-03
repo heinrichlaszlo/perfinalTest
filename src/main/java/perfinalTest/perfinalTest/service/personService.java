@@ -48,9 +48,8 @@ public class personService {
     public String addNewTravelByName(String name) {
         person Person = personRepository.findById(name).get();
         travel travel = new travel();
-
+        String target;
         //a személy aki kapja az utazást
-
         travel.setPerson(Person);
         Long utso = travelrepository.getMaxDateId(Person.getName());
         Long utso2 = travelrepository.getSecondMaxDateId(Person.getName());;
@@ -64,13 +63,12 @@ public class personService {
         jelenlegiCity.setKm(0);
 
         // a megfelelő város kiválasztása
-
         for (i = 0; i < cities.size() - 1; i++) {
             newUrlString = regiurl.toString().replace("latitudehelye", cities.get(i).getLatitude()).replace("longlatiudehelye", cities.get(i).getLonglatitude());
             apiconnector.getJSONArray(newUrlString);
             newCsapadekString = csapadekURL.toString().replace("cslatitudehelye", cities.get(i).getLatitude()).replace("cslonglatiudehelye", cities.get(i).getLonglatitude());
-            if(cities.get(i).getId()!= utso && cities.get(i).getId()!= utso2 && apiconnector2.getCsapadek(newCsapadekString) == false){
-            if (cities.get(i).getTipus() == "városi" && (Integer.parseInt(String.valueOf(apiconnector)) > 10 && Integer.parseInt(String.valueOf(apiconnector)) < 30)) {
+            if(cities.get(i).getId()!= utso && cities.get(i).getId()!= utso2 && csapadekService.getCsapadekBoolean(apiconnector2.getCsapadek(newCsapadekString)) == false){
+            if (cities.get(i).getTipus() == "városi" && (Integer.parseInt(String.valueOf(apiconnector.getAvarageTemperature(apiconnector.getJSONArray(newUrlString)))) > 10 && Integer.parseInt(String.valueOf(apiconnector)) < 30)) {
                 if (jelenlegiCity.getKm() < cities.get(i).getKm())
                     jelenlegiCity = (cities.get(i));
             } else {
@@ -81,17 +79,20 @@ public class personService {
         }}
 
         //dátum
-
         java.util.Date date = new java.util.Date();
         java.sql.Date sqlDate = new java.sql.Date(date.getTime());
         travel.setTravelDate(sqlDate);
         if(travel.getCity() != null){
             travelrepository.save(travel);
             System.out.println(Person.getName() + " ide utazik: " + jelenlegiCity.getName());
+             return jelenlegiCity.getName();
         }
-        else{
-            System.out.println("nincs olyan város ahova " + Person.getName() + " eltudna utazni.");
+        /*else{
+            //System.out.println("nincs olyan város ahova " + Person.getName() + " eltudna utazni.");
         }
-        return "megtörtént a sorsolás";
+        return target;*/
+        return null;
     }
+
+
 }

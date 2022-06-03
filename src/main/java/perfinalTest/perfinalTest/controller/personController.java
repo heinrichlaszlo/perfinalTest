@@ -3,6 +3,7 @@ package perfinalTest.perfinalTest.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import perfinalTest.perfinalTest.controller.response.Target;
 import perfinalTest.perfinalTest.entity.person;
 import perfinalTest.perfinalTest.entity.travel;
 import perfinalTest.perfinalTest.service.personService;
@@ -34,12 +35,12 @@ public class personController {
         }
     }
     @PostMapping("/newTravel/{name}")
-    public ResponseEntity<String> addNewTravelByName(@PathVariable String name) {
+    public ResponseEntity addNewTravelByName(@PathVariable String name) {
         try {
-            personService.addNewTravelByName(name);
-            return new ResponseEntity<String>(HttpStatus.CREATED);
+            Target target = new Target(personService.addNewTravelByName(name));
+            return ResponseEntity.ok(target);
         } catch (Exception e) {
-            return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+            return  ResponseEntity.badRequest().body(e);
         }
     }
 }
